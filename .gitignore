@@ -1,0 +1,27 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+
+# Android / Gradle
+.gradle/
+build/
+*.apk
+local.properties
+.cxx/
+.externalNativeBuild/
+.idea/
+*.iml
+
+# WexowRAT Specific
+server/Downloads/
+server/output/
+server/workdir/
+server/build_config.json
+server/debug.keystore
+
+# OS specific
+.DS_Store
+Thumbs.db

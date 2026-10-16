@@ -1,0 +1,29 @@
+services:
+  tailscale-wexow:
+    image: tailscale/tailscale:latest
+    container_name: wexow-tailscale
+    hostname: wexow-c2
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/serve.json
+    volumes:
+      - ./tailscale-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+      - ./tsconfig:/config
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
+  wexow-server:
+    build: ./server
+    container_name: wexow-server
+    network_mode: "service:tailscale-wexow"
+    depends_on:
+      - tailscale-wexow
+    restart: unless-stopped
+    volumes:
+      - ./server/Downloads:/app/Downloads
+      - ./server/output:/app/output
+      - ./server/public/app:/app/public/app

